@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Ollama GUI</title>
+</head>
+<body>
+    <h1>Chat with local LLM</h1>
+    <input id="promptInput" type="text" placeholder="Type your message...">
+    <button id="sendBtn" onclick="sendPrompt()">Send</button>
+
+    <div id="responseBox" style="margin-top: 20px; white-space: pre-wrap;"></div>
+
+    <script>
+        async function sendPrompt() {
+            const prompt = document.getElementById("promptInput").value;
+
+            const res = await fetch("/chats", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ prompt })
+            });
+
+            const data = await res.json();
+            document.getElementById("responseBox").innerText = data.response || data.error;
+        }
+    </script>
+</body>
+</html>
