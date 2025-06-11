@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, json
 import requests
 
 app = Flask(__name__)
@@ -12,10 +12,10 @@ def index():
 @app.route("/chats", methods=["POST"])
 def chat():
     data = request.get_json()
-    print("Received data:", data) # checking
+    print("Received data:", data)
     prompt = data.get("prompt")
 
-    modelname = "llama3.2" # can change and even make it a chpice 
+    modelname = "llama3.2"
 
     try:
         response = requests.post(
@@ -24,11 +24,18 @@ def chat():
                 "model": modelname,
                 "prompt": prompt,
                 "stream": True
-            }
+            },
+            stream=True
         )
-        result = response.json()
-        
-        return result.get("response", "⚠️ No response")
+
+        # Aggregate the 'response' fields from each streamed JSON line
+        full_response = ""
+        for line in response.iter_lines():
+            if line:
+                obj = json.loads(line.decode("utf-8"))
+                full_response += obj.get("response", "")
+
+        return full_response or "⚠️ No response"
 
     except Exception as e:
         print("❌ Error occurred:", e)
@@ -36,3 +43,12 @@ def chat():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
+
+
+
+
+
+

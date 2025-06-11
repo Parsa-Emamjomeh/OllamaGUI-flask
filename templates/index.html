@@ -2,14 +2,18 @@
 <html lang="en">
 <head>
     <title>Ollama GUI</title>
+    <link rel="stylesheet" herf="/static/styles.css">
 </head>
 <body>
-    <h1>Chat with local LLM</h1>
-    <input id="promptInput" type="text" placeholder="Type your message...">
-    <button id="sendBtn" onclick="sendPrompt()">Send</button>
+    <div class="container">
+        <h1>Chat with local LLM</h1>
+        <input id="promptInput" type="text" placeholder="Type your message...">
+        <button id="sendBtn" onclick="sendPrompt()">Send</button>
+    
 
-    <div id="responseBox" style="margin-top: 20px; white-space: pre-wrap;"></div>
-
+        <div id="responseBox" style="margin-top: 20px; white-space: pre-wrap;"></div>
+    </div>
+    
     <script>
         async function sendPrompt() {
             const prompt = document.getElementById("promptInput").value;
@@ -22,8 +26,8 @@
                 body: JSON.stringify({ prompt })
             });
 
-            const data = await res.json();
-            document.getElementById("responseBox").innerText = data.response || data.error;
+            const text = await res.text();
+            document.getElementById("responseBox").innerText = text;
         }
     </script>
 </body>
