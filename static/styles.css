@@ -74,16 +74,24 @@ h1 {
     gap: 10px;
 }
 
-.input-area input[type="text"] {
+.input-area textarea {
     flex: 1;
-    padding: 10px 12px;
+    resize: none;
+    overflow: hidden;
+    padding: 8px 12px;
     font-size: 16px;
+    line-height: 20px; /* <--- Crucial for consistent height */
     border: 1px solid #444;
     border-radius: 8px;
     background-color: #181818;
     color: #eef;
-    height: 40px;
+    min-height: 40px;   /* Matches 1 line height + padding */
+    max-height: 150px;
+    height: auto;
+    box-sizing: border-box;
 }
+
+
 
 .input-area button {
     padding: 0 20px;

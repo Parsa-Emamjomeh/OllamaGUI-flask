@@ -3,16 +3,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const promptInput = document.getElementById("promptInput");
     const chatHistory = document.getElementById("chatHistory");
 
+    const autoResize = () => {
+        promptInput.style.height = "auto"; // reset first
+        promptInput.style.height = promptInput.scrollHeight + "px";
+    };
+
+    // 🔧 Fix the first extra line issue by running once on load
+    autoResize();
+
+    // And also attach it to input events
+    promptInput.addEventListener("input", autoResize);
+
     sendBtn.addEventListener("click", async () => {
         const prompt = promptInput.value.trim();
         if (!prompt) return;
 
         addMessage(prompt, "user");
-
         promptInput.value = "";
+        autoResize(); // Reset height after clearing
 
-        addMessage("⏳ Thinking...", "bot", true);  // Temporary message
-        const tempBotMessage = chatHistory.firstChild; // The temporary "Thinking..." div
+        addMessage("⏳ Thinking...", "bot", true);
+        const tempBotMessage = chatHistory.firstChild;
 
         try {
             const res = await fetch("/chats", {
@@ -22,9 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const text = await res.text();
-
             tempBotMessage.innerText = text;
-
         } catch (error) {
             tempBotMessage.innerText = "❌ Error occurred.";
         }
